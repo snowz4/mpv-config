@@ -2764,33 +2764,33 @@ layouts["original"] = function ()
         lo = add_layout('tog_loop')
         lo.geometry = {x = osc_geo.w - 82 + (info_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
-        lo.visible = (osc_param.playresx >= 600 - outeroffset)
+        lo.visible = (osc_param.playresx >= 600 - outeroffset) and not state.is_URL
     end
 
     if speed_button then
         lo = add_layout('tog_speed')
-        lo.geometry = {x = osc_geo.w - 127 + (info_button and 0 or 45) + (loop_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - 127 + (info_button and 0 or 45) + (loop_button and 0 or 45) + (state.is_URL and 45 or 0), y = refY - 40, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 500 - outeroffset)
     end
 
     if ontop_button then
         lo = add_layout('tog_ontop')
-        lo.geometry = {x = osc_geo.w - 172 + (info_button and 0 or 45) + (loop_button and 0 or 45) + (speed_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - 172 + (info_button and 0 or 45) + (loop_button and 0 or 45) + (speed_button and 0 or 45) + (state.is_URL and 45 or 0), y = refY - 40, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 700 - outeroffset)
     end
 
     if screenshot_button then
         lo = add_layout('screenshot')
-        lo.geometry = {x = osc_geo.w - 217 + (info_button and 0 or 45) + (loop_button and 0 or 45) + (speed_button and 0 or 45) + (ontop_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - 217 + (info_button and 0 or 45) + (loop_button and 0 or 45) + (speed_button and 0 or 45) + (ontop_button and 0 or 45) + (state.is_URL and 45 or 0), y = refY - 40, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 300 - outeroffset)
     end
 
     if user_opts.download_button then
         lo = add_layout('download')
-        lo.geometry = {x = osc_geo.w - 262 + (info_button and 0 or 45) + (loop_button and 0 or 45) + (speed_button and 0 or 45) + (ontop_button and 0 or 45) + (screenshot_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - 262 + (info_button and 0 or 45) + (loop_button and 0 or 45) + (speed_button and 0 or 45) + (ontop_button and 0 or 45) + (screenshot_button and 0 or 45) + (state.is_URL and 45 or 0), y = refY - 40, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 400 - outeroffset)
     end
@@ -3017,33 +3017,33 @@ layouts["reduced"] = function ()
         lo = add_layout('tog_loop')
         lo.geometry = {x = osc_geo.w - 82 + (speed_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
-        lo.visible = (osc_param.playresx >= 600 - outeroffset)
+        lo.visible = (osc_param.playresx >= 600 - outeroffset) and not state.is_URL
     end
 
     if info_button then
         lo = add_layout('tog_info')
-        lo.geometry = {x = osc_geo.w - 127 + (speed_button and 0 or 45) + (loop_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - 127 + (speed_button and 0 or 45) + (loop_button and 0 or 45) + (state.is_URL and 45 or 0), y = refY - 40, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 400 - outeroffset)
     end
 
     if ontop_button then
         lo = add_layout('tog_ontop')
-        lo.geometry = {x = osc_geo.w - 172 + (speed_button and 0 or 45) + (loop_button and 0 or 45) + (info_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - 172 + (speed_button and 0 or 45) + (loop_button and 0 or 45) + (info_button and 0 or 45) + (state.is_URL and 45 or 0), y = refY - 40, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 700 - outeroffset)
     end
 
     if screenshot_button then
         lo = add_layout('screenshot')
-        lo.geometry = {x = osc_geo.w - 217 + (speed_button and 0 or 45) + (loop_button and 0 or 45) + (info_button and 0 or 45) + (ontop_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - 217 + (speed_button and 0 or 45) + (loop_button and 0 or 45) + (info_button and 0 or 45) + (ontop_button and 0 or 45) + (state.is_URL and 45 or 0), y = refY - 40, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 300 - outeroffset)
     end
 
     if user_opts.download_button then
         lo = add_layout('download')
-        lo.geometry = {x = osc_geo.w - 262 + (speed_button and 0 or 45) + (loop_button and 0 or 45) + (info_button and 0 or 45) + (ontop_button and 0 or 45) + (screenshot_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - 262 + (speed_button and 0 or 45) + (loop_button and 0 or 45) + (info_button and 0 or 45) + (ontop_button and 0 or 45) + (screenshot_button and 0 or 45) + (state.is_URL and 45 or 0), y = refY - 40, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 400 - outeroffset)
     end
@@ -3462,7 +3462,7 @@ local function osc_init()
     ne.content = function ()
         return mp.get_property("loop-file") ~= "no" and icons.loop_on or icons.loop_off
     end
-    ne.visible = (osc_param.playresx >= 600 - outeroffset)
+    ne.visible = (osc_param.playresx >= 600 - outeroffset) and not state.is_URL
     ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = function ()
         if mp.get_property("loop-file") ~= "no" then
