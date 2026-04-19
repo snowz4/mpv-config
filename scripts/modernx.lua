@@ -153,6 +153,10 @@ local user_opts = {
     volume_control = true,                  -- show mute button and volume slider
     volume_control_type = "linear",         -- volume scale type: "linear" or "logarithmic"
 
+    speed_button = false,                   -- show speed control button
+    speed_button_click = 0.5,               -- speed change amount per click
+    speed_button_scroll = 0.25,             -- speed change amount on scroll
+
     info_button = false,                    -- show info button
     ontop_button = true,                    -- show window on top button
     screenshot_button = false,              -- show screenshot button
@@ -176,9 +180,9 @@ local user_opts = {
     window_controls_close_hover = "#E81123", -- color of close window control on hover
     window_controls_minmax_hover = "#53A4FC", -- color of min/max window controls on hover
     title_color = "#FFFFFF",                -- color of the title (above seekbar)
-    seekbarfg_color = "#1D96F5",            -- color of the seekbar progress and handle, in Hex color format
+    seekbarfg_color = "#873a80",            -- color of the seekbar progress and handle, in Hex color format (ROXO)
     seekbarbg_color = "#FFFFFF",            -- color of the remaining seekbar, in Hex color format
-    seekbar_cache_color = "#1D96F5",        -- color of the cache ranges on the seekbar
+    seekbar_cache_color = "#b685d6",        -- color of the cache ranges on the seekbar (ROXO CLARO)
     volumebar_match_seek_color = false,     -- match volume bar color with seekbar color (ignores side_buttons_color)
     time_color = "#FFFFFF",                 -- color of the timestamps (below seekbar)
     chapter_title_color = "#FFFFFF",        -- color of the chapter title next to timestamp (below seekbar)
@@ -285,8 +289,9 @@ local icons = {
 
     download = "\239\133\144",
     downloading = "\239\140\174",
-    loop_off = "\239\133\178",
-    loop_on = "\239\133\181",
+    loop_off = "\239\133\181",             -- Inverted
+    loop_on = "\239\133\178",              -- Inverted
+    speed = "\239\160\177",
     info = "\239\146\164",
     ontop_on = "\238\165\190",
     ontop_off = "\238\166\129",
@@ -333,6 +338,7 @@ local language = {
         loopenable = 'Looping enabled',
         loopdisable = 'Looping disabled',
         screenshot = "Screenshot",
+        speed_control = "Speed Control",
         statsinfo = "Information",
         download = "Download",
         download_in_progress = "Download in progress",
@@ -2611,6 +2617,7 @@ layouts["original"] = function ()
     local loop_button = user_opts.loop_button
     local info_button = user_opts.info_button
     local ontop_button = user_opts.ontop_button
+    local speed_button = user_opts.speed_button
     local screenshot_button = user_opts.screenshot_button
 
     if user_opts.compact_mode then
@@ -2745,50 +2752,54 @@ layouts["original"] = function ()
     lo.style = osc_styles.control_3
     lo.visible = (osc_param.playresx >= 700 - outeroffset)
 
-    -- Fullscreen/Loop/Info
-    lo = add_layout('tog_fs')
-    lo.geometry = {x = osc_geo.w - 37, y = refY - 40, an = 5, w = 24, h = 24}
-    lo.style = osc_styles.control_3
-    lo.visible = (osc_param.playresx >= 250 - outeroffset)
-
-    if ontop_button then
-        lo = add_layout('tog_ontop')
-        lo.geometry = {x = osc_geo.w - 127 + (loop_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+    -- Speed > Loop > Info
+    if info_button then
+        lo = add_layout('tog_info')
+        lo.geometry = {x = osc_geo.w - 37, y = refY - 40, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
-        lo.visible = (osc_param.playresx >= 700 - outeroffset)
+        lo.visible = (osc_param.playresx >= 400 - outeroffset)
     end
 
     if loop_button then
         lo = add_layout('tog_loop')
-        lo.geometry = {x = osc_geo.w - 82, y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - 82 + (info_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 600 - outeroffset)
     end
 
-    if info_button then
-        lo = add_layout('tog_info')
-        lo.geometry = {x = osc_geo.w - 172 + (loop_button and 0 or 45) + (ontop_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+    if speed_button then
+        lo = add_layout('tog_speed')
+        lo.geometry = {x = osc_geo.w - 127 + (info_button and 0 or 45) + (loop_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 500 - outeroffset)
     end
 
+    if ontop_button then
+        lo = add_layout('tog_ontop')
+        lo.geometry = {x = osc_geo.w - 172 + (info_button and 0 or 45) + (loop_button and 0 or 45) + (speed_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.style = osc_styles.control_3
+        lo.visible = (osc_param.playresx >= 700 - outeroffset)
+    end
+
     if screenshot_button then
         lo = add_layout('screenshot')
-        lo.geometry = {x = osc_geo.w - 217 + (loop_button and 0 or 45) + (ontop_button and 0 or 45) + (info_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - 217 + (info_button and 0 or 45) + (loop_button and 0 or 45) + (speed_button and 0 or 45) + (ontop_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 300 - outeroffset)
     end
 
     if user_opts.download_button then
         lo = add_layout('download')
-        lo.geometry = {x = osc_geo.w - 262 + (loop_button and 0 or 45) + (ontop_button and 0 or 45) + (info_button and 0 or 45) + (screenshot_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - 262 + (info_button and 0 or 45) + (loop_button and 0 or 45) + (speed_button and 0 or 45) + (ontop_button and 0 or 45) + (screenshot_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 400 - outeroffset)
     end
+
 end
 
 -- Reduced occupation layout
 layouts["reduced"] = function ()
+
     local osc_geo = {
         w = osc_param.playresx,
         h = 180
@@ -2865,6 +2876,7 @@ layouts["reduced"] = function ()
     local loop_button = user_opts.loop_button
     local info_button = user_opts.info_button
     local ontop_button = user_opts.ontop_button
+    local speed_button = user_opts.speed_button
     local screenshot_button = user_opts.screenshot_button
 
     if user_opts.compact_mode then
@@ -2993,69 +3005,49 @@ layouts["reduced"] = function ()
     lo.style = osc_styles.control_3
     lo.visible = (osc_param.playresx >= 700 - outeroffset)
 
-    -- Fullscreen/Loop/Info
-    lo = add_layout('tog_fs')
-    lo.geometry = {x = osc_geo.w - 37, y = refY - 40, an = 5, w = 24, h = 24}
-    lo.style = osc_styles.control_3
-    lo.visible = (osc_param.playresx >= 250 - outeroffset)
-
-    if ontop_button then
-        lo = add_layout('tog_ontop')
-        lo.geometry = {x = osc_geo.w - 127 + (loop_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+    -- Speed > Loop > Info
+    if speed_button then
+        lo = add_layout('tog_speed')
+        lo.geometry = {x = osc_geo.w - 37, y = refY - 40, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
-        lo.visible = (osc_param.playresx >= 700 - outeroffset)
+        lo.visible = (osc_param.playresx >= 500 - outeroffset)
     end
 
     if loop_button then
         lo = add_layout('tog_loop')
-        lo.geometry = {x = osc_geo.w - 82, y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - 82 + (speed_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 600 - outeroffset)
     end
 
     if info_button then
         lo = add_layout('tog_info')
-        lo.geometry = {x = osc_geo.w - 172 + (loop_button and 0 or 45) + (ontop_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - 127 + (speed_button and 0 or 45) + (loop_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
-        lo.visible = (osc_param.playresx >= 500 - outeroffset)
+        lo.visible = (osc_param.playresx >= 400 - outeroffset)
+    end
+
+    if ontop_button then
+        lo = add_layout('tog_ontop')
+        lo.geometry = {x = osc_geo.w - 172 + (speed_button and 0 or 45) + (loop_button and 0 or 45) + (info_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.style = osc_styles.control_3
+        lo.visible = (osc_param.playresx >= 700 - outeroffset)
     end
 
     if screenshot_button then
         lo = add_layout('screenshot')
-        lo.geometry = {x = osc_geo.w - 217 + (loop_button and 0 or 45) + (ontop_button and 0 or 45) + (info_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - 217 + (speed_button and 0 or 45) + (loop_button and 0 or 45) + (info_button and 0 or 45) + (ontop_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 300 - outeroffset)
     end
 
     if user_opts.download_button then
         lo = add_layout('download')
-        lo.geometry = {x = osc_geo.w - 262 + (loop_button and 0 or 45) + (ontop_button and 0 or 45) + (info_button and 0 or 45) + (screenshot_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
+        lo.geometry = {x = osc_geo.w - 262 + (speed_button and 0 or 45) + (loop_button and 0 or 45) + (info_button and 0 or 45) + (ontop_button and 0 or 45) + (screenshot_button and 0 or 45), y = refY - 40, an = 5, w = 24, h = 24}
         lo.style = osc_styles.control_3
         lo.visible = (osc_param.playresx >= 400 - outeroffset)
     end
-end
 
--- Validate string type user options
-function validate_user_opts()
-    if user_opts.window_top_bar ~= "auto" and
-       user_opts.window_top_bar ~= "yes" and
-       user_opts.window_top_bar ~= "no" then
-        mp.msg.warn("window_top_bar cannot be '" .. user_opts.window_top_bar .. "'. Ignoring.")
-        user_opts.window_top_bar = "auto"
-    end
-
-    if user_opts.volume_control_type ~= "linear" and
-    user_opts.volume_control_type ~= "logarithmic" then
-        mp.msg.warn("volume_control_type cannot be '" .. user_opts.volume_control_type .. "'. Ignoring.")
-        user_opts.volume_control_type = "linear"
-    end
-end
-
-function update_options(list)
-    validate_user_opts()
-    request_tick()
-    visibility_mode("auto")
-    request_init()
 end
 
 -- OSC INIT
@@ -3468,25 +3460,27 @@ local function osc_init()
     --tog_loop
     ne = new_element('tog_loop', 'button')
     ne.content = function ()
-        if (state.looping) then
-            return (icons.loop_on)
-        else
-            return (icons.loop_off)
-        end
+        return mp.get_property("loop-file") ~= "no" and icons.loop_on or icons.loop_off
     end
     ne.visible = (osc_param.playresx >= 600 - outeroffset)
     ne.tooltip_style = osc_styles.tooltip
     ne.tooltipF = function ()
-        local message = texts.loopenable
-        if state.looping then
-            message = texts.loopdisable
+        if mp.get_property("loop-file") ~= "no" then
+            return texts.loopenable
+        else
+            return texts.loopdisable
         end
-        return message
     end
     ne.eventresponder['mbtn_left_up'] =
         function ()
-            state.looping = not state.looping
-            mp.set_property_native("loop-file", state.looping)
+            if mp.get_property("loop-file") == "no" then
+                mp.set_property("loop-file", "inf")
+                show_message(texts.loopenable)
+            else
+                mp.set_property("loop-file", "no")
+                show_message(texts.loopdisable)
+            end
+            request_tick()
         end
 
     --download
@@ -3541,6 +3535,25 @@ local function osc_init()
         end
         mp.commandv("osd-msg", "screenshot", user_opts.screenshot_flag)
         mp.commandv("set", "sub-pos", temp_sub_pos)
+    end
+
+    --tog_speed
+    ne = new_element('tog_speed', 'button')
+    ne.content = icons.speed
+    ne.visible = (osc_param.playresx >= 900 - outeroffset - (user_opts.loop_button and 0 or 100) - (user_opts.ontop_button and 0 or 100) - (user_opts.info_button and 0 or 100))
+    ne.tooltip_style = osc_styles.tooltip
+    ne.tooltipF = function() return texts.speed_control end
+    ne.eventresponder['mbtn_left_up'] = function ()
+        mp.commandv("osd-msg", "set", "speed", math.min(100, mp.get_property_number("speed") + user_opts.speed_button_click))
+    end
+    ne.eventresponder['mbtn_right_up'] = function ()
+        mp.commandv("osd-msg", "set", "speed", 1)
+    end
+    ne.eventresponder['wheel_up_press'] = function ()
+        mp.commandv("osd-msg", "set", "speed", math.min(100, mp.get_property_number("speed") + user_opts.speed_button_scroll))
+    end
+    ne.eventresponder['wheel_down_press'] = function ()
+        mp.commandv("osd-msg", "set", "speed", math.max(0.25, mp.get_property_number("speed") - user_opts.speed_button_scroll))
     end
 
     --tog_info
