@@ -4,6 +4,7 @@
 local mp = require("mp")
 
 local pending_timer = nil
+local last_press_time = 0
 
 local function show_frame_pos()
     if pending_timer then
@@ -17,14 +18,34 @@ local function show_frame_pos()
     end)
 end
 
-mp.add_key_binding(".", "frame-step-counter", function()
-    mp.commandv("script-message", "pause-indicator-ignore")
-    mp.command("no-osd frame-step")
-    show_frame_pos()
-end, {repeatable = true})
+local function get_frame_duration()
+    local fps = mp.get_property_number("container-fps", 24)
+    return 1.0 / fps
+end
 
-mp.add_key_binding(",", "frame-back-counter", function()
+local function step(direction)
     mp.commandv("script-message", "pause-indicator-ignore")
-    mp.command("no-osd frame-back-step")
+
+    local now = mp.get_time()
+    local is_repeat = (now - last_press_time) < 0.25
+    last_press_time = now
+
+    if is_repeat then
+        -- When holding the key, use seek to avoid frame-step's pause toggle
+        local d = get_frame_duration() * direction
+        mp.commandv("no-osd", "seek", tostring(d), "exact")
+    else
+        -- Single press: use precise frame-step
+        mp.set_property_bool("pause", true)
+        if direction > 0 then
+            mp.command("no-osd frame-step")
+        else
+            mp.command("no-osd frame-back-step")
+        end
+    end
+
     show_frame_pos()
-end, {repeatable = true})
+end
+
+mp.add_key_binding(".", "frame-step-counter", function() step(1) end, {repeatable = true})
+mp.add_key_binding(",", "frame-back-counter", function() step(-1) end, {repeatable = true})
